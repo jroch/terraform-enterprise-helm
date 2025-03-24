@@ -128,12 +128,14 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
+          {{- if .Values.tfe.privateHttpsPort }}
           - name: certificates
             mountPath: {{ .Values.tls.certMountPath }}
             subPath: tls.crt
           - name: certificates
             mountPath: {{ .Values.tls.keyMountPath }}
             subPath: tls.key
+          {{- end }}
           {{- if .Values.tls.caCertData }}
           - name: ca-certificates
             mountPath: {{ include "cacert.path" . }}
@@ -149,7 +151,9 @@ spec:
           {{- end }}
         ports:
         - containerPort: {{ .Values.tfe.privateHttpPort }}
+        {{- if .Values.tfe.privateHttpsPort }}
         - containerPort: {{ .Values.tfe.privateHttpsPort }}
+        {{- end }}
         {{- if .Values.tfe.metrics.enable }}
         - containerPort: {{.Values.tfe.metrics.httpPort}}
         - containerPort: {{.Values.tfe.metrics.httpsPort}}

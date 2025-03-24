@@ -19,9 +19,12 @@ data:
   {{- end }}
   TFE_VAULT_DISABLE_MLOCK: "true"
   TFE_HTTP_PORT: "{{ .Values.tfe.privateHttpPort }}"
+  {{- if .Values.tfe.privateHttpsPort }}
   TFE_HTTPS_PORT: "{{ .Values.tfe.privateHttpsPort }}"
   TFE_TLS_CERT_FILE: "{{ .Values.tls.certMountPath }}"
   TFE_TLS_KEY_FILE:  "{{ .Values.tls.keyMountPath }}"
+  {{- end}}
+
   {{- if .Values.tls.caCertData }}
   TFE_TLS_CA_BUNDLE_FILE: {{ include "cacert.path" . }}
   {{- end }}

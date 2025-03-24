@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: terraform-enterprise-managed-cert
+  namespace: {{ .Release.Namespace }}
+spec:
+  domains:
+    - tfe.roch-consulting.be

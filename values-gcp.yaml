@@ -1,0 +1,98 @@
+replicaCount: 1
+
+# Image sets the repo, name and tag of the Terraform Enterprise image to use.
+image:
+ repository: europe-west1-docker.pkg.dev/terraform-enterprise-1/terraform-enterprise-1-repo
+ name: terraform-enterprise
+ tag: v202503-1
+ pullPolicy: Always
+
+# Resource limits are not set by default, to give the user the ability to set specific resource limits.
+# If you do want to specify resource limits, uncomment the following lines and adjust them as necessary.
+resources:
+  requests:
+    memory: "2500Mi"
+    cpu: "750m"
+  limits:
+    memory: "3000Mi"
+    cpu: "1000m"
+
+# For end-to-end TLS, but we want to terminate TLS at the GCP Ingress.
+tls:
+  certMountPath: null
+  keyMountPath: null
+
+serviceAccount:    
+  enabled: true
+  name: "gke-storage-sa"
+  annotations:
+    iam.gke.io/gcp-service-account: "gke-storage-sa@terraform-enterprise-1.iam.gserviceaccount.com"
+
+tfe:
+  metrics:
+    enable: false
+    httpPort: 9090
+    httpsPort: 9091
+  privateHttpPort: 8080
+  privateHttpsPort: null # force to null to disable private HTTPS port
+
+
+# Ingress allows ingress services to be created to allow external access
+# from Kubernetes to access Terraform Enterprise pods.
+ingress:
+  enabled: true
+  className: "gce"  # Use "gce" for GCP Ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "ipi-terraform-enterprise"
+    networking.gke.io/managed-certificates: terraform-enterprise-managed-cert
+  hosts:
+    - host: "tfe.roch-consulting.be"
+      paths:
+        - path: /
+          pathType: Prefix
+          serviceName: "terraform-enterprise"
+          portNumber: 8080
+  tls:
+    - hosts:
+      - "tfe.roch-consulting.be"
+      # secretName: ""  # Leave empty when using managed certificates
+
+ # Injector service specific configurations
+service:
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    # networking.gke.io/load-balancer-ip: "ipi-terraform-enterprise"
+
+    # Add annotations here for specific cloud provider configurations.
+    # Examples:
+    # - For Google Cloud, use the NEG (Network Endpoint Group) annotation:
+    #   cloud.google.com/neg: '{"ingress": true}'
+    # - For Azure, configure the health probe request path for HTTPS health checks:
+    #   service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/_health_check"
+  labels: {}
+    # Add labels to the service created for Terraform Enterprise. Helpful if your metrics collection
+    # depends on ServiceMonitors instead of pod annotations.
+
+  type: ClusterIP # The type of service to create. Options: LoadBalancer, ClusterIP, NodePort.
+                     # - LoadBalancer: Exposes the service externally using a cloud provider's load balancer.
+                     # - ClusterIP: Default type; exposes the service only within the cluster.
+                     # - NodePort: Exposes the service on a static port on each cluster node.
+
+  port:
+    http: 8080          # The port exposed by the service (external port).
+    # https: 443
+
+  # nodePort: 32443    # If service.type is NodePort, this sets the external port on cluster nodes.
+                     # Ignored for LoadBalancer and ClusterIP types.
+
+  appProtocol: tcp   # Application protocol for the service.
+                     # - Default is "tcp" for broad compatibility across cloud providers.
+                     # - Set to "https" if Gateway API or Layer 7 features are required.
+
+  loadBalancerIP: null # If service.type is LoadBalancer, you can optionally set a specific external IP.
+                       # Useful for static IP requirements or pre-existing IP reservations.
+
+
+env:
+  configFilePath: env-config.yaml
+  # secretsFilePath: env-secrets.yaml
