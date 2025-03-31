@@ -2,11 +2,9 @@ TFE_LOG_LEVEL: "debug"
 TFE_OBJECT_STORAGE_TYPE: "google"
 TFE_OBJECT_STORAGE_GOOGLE_BUCKET: "terraform-enterprise-bucket-jro"
 TFE_OBJECT_STORAGE_GOOGLE_PROJECT: "terraform-enterprise-1"
-TFE_ENCRYPTION_PASSWORD: "SECRET"
-TFE_DATABASE_HOST: "10.209.0.3:5432"
+TFE_DATABASE_HOST: "db.internal.roch-consulting.be:5432"
 TFE_DATABASE_NAME: "terraform_enterprise"    
 TFE_DATABASE_USER: "tfe_user"
-TFE_DATABASE_PASSWORD: "<insert database password here>"
 TFE_DATABASE_PARAMETERS: ""
 TFE_REDIS_USE_TLS: "false"  # Set to "true" if your Redis instance requires TLS
 TFE_REDIS_USER: ""  # Leave empty if no user authentication is required
@@ -16,4 +14,4 @@ TFE_REDIS_SIDEKIQ_USE_TLS: "false"  # Set to "true" if your Redis Sidekiq instan
 TFE_REDIS_SIDEKIQ_USER: ""  # Leave empty if no user authentication is required for Sidekiq
 TFE_REDIS_SIDEKIQ_HOST: "redis.internal.roch-consulting.be"  # Replace with your Redis instance's internal IP or hostname
 TFE_REDIS_SIDEKIQ_USE_AUTH: "false"  # Set to "true" if your Redis Sidekiq instance requires authentication
-TFE_LICENSE: "<insert flex license here>"
+TFE_ENABLE_TLS: "false"

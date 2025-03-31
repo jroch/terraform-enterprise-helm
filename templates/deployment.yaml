@@ -51,6 +51,9 @@ spec:
       securityContext:
         {{- toYaml .Values.securityContext | nindent 8 }}
       volumes:
+        - name: nginx-template
+          configMap:
+            name: tfe-nginx-template
         - name: certificates
           secret:
             secretName: {{ .Values.tls.certificateSecret }}
@@ -128,6 +131,9 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
+          - name: nginx-template
+            mountPath: /etc/nginx/conf.d/terraform-enterprise.conf.tmpl
+            subPath: terraform-enterprise.conf.tmpl
           {{- if .Values.tfe.privateHttpsPort }}
           - name: certificates
             mountPath: {{ .Values.tls.certMountPath }}
