@@ -21,6 +21,8 @@ resources:
 tls:
   certMountPath: null
   keyMountPath: null
+  domains:
+    - terraform-enterprise.fednot.be
 
 serviceAccount:    
   enabled: true
@@ -46,7 +48,7 @@ ingress:
     kubernetes.io/ingress.global-static-ip-name: "ipi-terraform-enterprise"
     networking.gke.io/managed-certificates: terraform-enterprise-managed-cert
   hosts:
-    - host: "tfe.roch-consulting.be"
+    - host: "terraform-enterprise.fednot.be"
       paths:
         - path: /
           pathType: Prefix
@@ -54,7 +56,7 @@ ingress:
           portNumber: 8080
   tls:
     - hosts:
-      - "tfe.roch-consulting.be"
+      - "terraform-enterprise.fednot.be"
       # secretName: ""  # Leave empty when using managed certificates
 
  # Injector service specific configurations
