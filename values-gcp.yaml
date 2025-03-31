@@ -47,6 +47,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "ipi-terraform-enterprise"
     networking.gke.io/managed-certificates: terraform-enterprise-managed-cert
+    kubernetes.io/ingress.class: "gce"
   hosts:
     - host: "tfe.roch-consulting.be"
       paths:
