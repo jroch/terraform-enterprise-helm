@@ -15,3 +15,4 @@ TFE_REDIS_SIDEKIQ_USER: ""  # Leave empty if no user authentication is required 
 TFE_REDIS_SIDEKIQ_HOST: "redis.internal.roch-consulting.be"  # Replace with your Redis instance's internal IP or hostname
 TFE_REDIS_SIDEKIQ_USE_AUTH: "false"  # Set to "true" if your Redis Sidekiq instance requires authentication
 TFE_ENABLE_TLS: "false"
+TFE_HOSTNAME: "tfe.roch-consulting.be"
