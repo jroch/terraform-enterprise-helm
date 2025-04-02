@@ -1,0 +1,62 @@
+
+{{- if not .Values.ingress.enabled -}}
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: GatewayClass
+# metadata:
+#   name: gke-l7-gxlb
+# spec:
+#   controllerName: networking.gke.io/gateway-class-controller
+# ---
+# Gateway - define TLS passthrough to your TFE pod (on port 8443)
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: tfe-gateway
+  namespace: terraform-enterprise
+spec:
+  gatewayClassName: gke-l7-gxlb
+  listeners:
+  - name: https
+    hostname: "tfe.roch-consulting.be"
+    port: 443
+    protocol: https
+    tls:
+      mode: Passthrough
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+# Service - expose your app's 8443 port via ClusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: terraform-enterprise
+  namespace: terraform-enterprise
+  labels:
+    app: terraform-enterprise
+spec:
+  selector:
+    app: terraform-enterprise
+  ports:
+  - name: https
+    port: 443
+    targetPort: 8443
+  type: ClusterIP
+---
+# HTTPRoute - bind the Gateway to your service
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: tfe-tls-route
+  namespace: terraform-enterprise
+spec:
+  parentRefs:
+  - name: tfe-gateway
+  hostnames:
+  - "tfe.roch-consulting.be"
+  rules:
+  - backendRefs:
+    - name: terraform-enterprise
+      port: 443
+
+{{- end -}}

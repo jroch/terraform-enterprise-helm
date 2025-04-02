@@ -81,3 +81,12 @@ For more information about Terraform Enterprise and the capabilities of this hel
 * [Terraform Enterprise Application Configuration Options](docs/configuration.md#terraform-enterprise-application-configuration-options)
 * [Examples of Common Implementations](docs/implementations.md#implementation-examples)
 * [Terraform Enterprise Common Kubernetes Configuration](docs/kubernetes_configuration.md#terraform-enterprise-common-kubernetes-configuration)
+
+
+## Generate TLS cert
+
+kubectl create secret tls terraform-enterprise-certificates -n terraform-enterprise \
+  --cert=tfe-selfsigned.crt \
+  --key=tfe-selfsigned.key \
+  -n terraform-enterprise
+

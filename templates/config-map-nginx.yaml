@@ -5,4 +5,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   terraform-enterprise.conf.tmpl: |
-{{ .Files.Get "custom-nginx-template-v1.conf" | indent 4 }}
+{{ .Files.Get "custom-nginx-template.conf" | indent 4 }}
