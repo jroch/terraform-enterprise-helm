@@ -6,7 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   healthCheck:
-    port: {{ .Values.service.port.http }}
+    # port: {{ .Values.service.nodePort.https }}
+    port: 443
     requestPath: /_health_check
-    type: HTTP
+    type: HTTPS   
 {{- end -}}
