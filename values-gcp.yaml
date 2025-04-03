@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 
 # Image sets the repo, name and tag of the Terraform Enterprise image to use.
 image:
@@ -19,8 +19,8 @@ resources:
 
 # For end-to-end TLS, but we want to terminate TLS at the GCP Ingress.
 tls:
-  certMountPath: null
-  keyMountPath: null
+  certFile: /etc/nginx/ssl/tls.crt
+  keyFile: /etc/nginx/ssl/tls.key
   domains:
     - tfe.roch-consulting.be
 
@@ -36,17 +36,17 @@ tfe:
     httpPort: 9090
     httpsPort: 9091
   privateHttpPort: 8080
-  privateHttpsPort: null # force to null to disable private HTTPS port
+  # privateHttpsPort: null # force to null to disable private HTTPS port
 
 
 # Ingress allows ingress services to be created to allow external access
 # from Kubernetes to access Terraform Enterprise pods.
 ingress:
-  enabled: true
+  enabled: false
   className: "gce"  # Use "gce" for GCP Ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "ipi-terraform-enterprise"
-    networking.gke.io/managed-certificates: terraform-enterprise-managed-cert
+    # networking.gke.io/managed-certificates: terraform-enterprise-managed-cert
     kubernetes.io/ingress.class: "gce"
   hosts:
     - host: "tfe.roch-consulting.be"
@@ -54,16 +54,21 @@ ingress:
         - path: /
           pathType: Prefix
           serviceName: "terraform-enterprise"
-          portNumber: 8080
-  tls:
-    - hosts:
-      - "tfe.roch-consulting.be"
+          portNumber: 443
+  # tls:
+  #   - hosts:
+  #     - "tfe.roch-consulting.be"
+  #     secretName: "terraform-enterprise-certificates" # Leave empty when using managed certificates
       # secretName: ""  # Leave empty when using managed certificates
 
  # Injector service specific configurations
 service:
   annotations:
-    cloud.google.com/neg: '{"ingress": true}'
+    # cloud.google.com/app-protocols: '{"https-port":"HTTPS","http-port":"HTTP"}' 
+    # cloud.google.com/neg: '{"ingress": true}'
+    # cloud.google.com/backend-config: '{"default": "terraform-backend-config"}'
+    # beta.cloud.google.com/backend-config: '{"ports": {"https-port":"terraform-backend-config"}}'
+
     # networking.gke.io/load-balancer-ip: "ipi-terraform-enterprise"
 
     # Add annotations here for specific cloud provider configurations.
@@ -83,6 +88,9 @@ service:
 
   port:
     http: 8080          # The port exposed by the service (external port).
+  nodePort:
+    http: 32080        # If service.type is NodePort, this sets the external port on cluster nodes.
+                       # Ignored for LoadBalancer and ClusterIP types.
     # https: 443
 
   # nodePort: 32443    # If service.type is NodePort, this sets the external port on cluster nodes.
