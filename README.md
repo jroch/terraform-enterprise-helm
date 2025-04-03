@@ -86,7 +86,13 @@ For more information about Terraform Enterprise and the capabilities of this hel
 ## Generate TLS cert
 
 kubectl create secret tls terraform-enterprise-certificates -n terraform-enterprise \
-  --cert=tfe-selfsigned.crt \
-  --key=tfe-selfsigned.key \
+  --cert=tfe.roch-consulting.be/fullchain.pem \
+  --key=tfe.roch-consulting.be/privkey.pem \
   -n terraform-enterprise
 
+helm install traefik traefik/traefik   --namespace traefik --create-namespace   --set service.type=LoadBalancer   --set ingressRoute.dashboard.enabled=true --set additionalArguments="{--entrypoints.websecure.address=:443/tcp,--entrypoints.websecure.http.tls.passthrough=true}"
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.0/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
+kubectl create secret -n traefik tls default  \
+  --cert=tfe.roch-consulting.be/fullchain.pem \
+  --key=tfe.roch-consulting.be/privkey.pem \
