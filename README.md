@@ -83,7 +83,7 @@ For more information about Terraform Enterprise and the capabilities of this hel
 * [Terraform Enterprise Common Kubernetes Configuration](docs/kubernetes_configuration.md#terraform-enterprise-common-kubernetes-configuration)
 
 
-## Generate TLS cert
+## Configure TLS cert
 
 kubectl create secret tls terraform-enterprise-certificates -n terraform-enterprise \
   --cert=tfe.roch-consulting.be/fullchain.pem \

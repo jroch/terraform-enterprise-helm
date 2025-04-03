@@ -18,28 +18,16 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  # externalTrafficPolicy: Local
   {{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
   ports:
-    {{- if .Values.service.port.http }}
-    - name: http-port
-      port: {{ .Values.service.port.http }}
-      {{- if eq .Values.service.type "NodePort" }}
-      nodePort: {{ .Values.service.nodePort.http }}
-      {{- end }}
-      targetPort: {{ .Values.tfe.privateHttpPort }}
-      appProtocol: {{ .Values.service.appProtocol }}
-    {{- end }}  
-    {{- if .Values.service.port.https }}
     - name: https-port
-      port: {{ .Values.service.port.https }}
+      port: {{ .Values.service.port }}
       {{- if eq .Values.service.type "NodePort" }}
-      nodePort: {{ .Values.service.nodePort.https }}
+      nodePort: {{ .Values.service.nodePort }}
       {{- end }}
       targetPort: {{ .Values.tfe.privateHttpsPort }}
       appProtocol: {{ .Values.service.appProtocol }}
-    {{- end }}
   selector:
     app: terraform-enterprise

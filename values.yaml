@@ -199,11 +199,9 @@ service:
                      # - ClusterIP: Default type; exposes the service only within the cluster.
                      # - NodePort: Exposes the service on a static port on each cluster node.
 
-  port: 
-    https: 443          # The port exposed by the service (external port).
+  port: 443          # The port exposed by the service (external port).
 
-  nodePort:
-    https: 32443    # If service.type is NodePort, this sets the external port on cluster nodes.
+  nodePort: 32443    # If service.type is NodePort, this sets the external port on cluster nodes.
                      # Ignored for LoadBalancer and ClusterIP types.
 
   appProtocol: tcp   # Application protocol for the service.
